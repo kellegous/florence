@@ -35,6 +35,7 @@ namespace app {
                     if (this.listener) {
                         this.listener(this, image);
                     }
+                    this.images.unshift(image);
                 });
             });
         }
