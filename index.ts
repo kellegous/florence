@@ -114,7 +114,7 @@ namespace app {
         }
     }
 
-    Model.load('/imgs/', 20, 10000).then((model) => {
+    Model.load('/imgs/', 20, 30*1000).then((model) => {
         new View(model);
     });
 }
