@@ -1,94 +1,17 @@
-var app;
-(function (app) {
-    var RATIO = 1920 / 1080;
-    var Model = /** @class */ (function () {
-        function Model(images, url, n, period) {
-            var _this = this;
-            this.images = images;
-            this.url = url;
-            this.n = n;
-            this.period = period;
-            setInterval(function () {
-                _this.reload();
-            }, period);
-        }
-        Model.prototype.reload = function () {
-            var _this = this;
-            Model.getImages(this.url, this.n).then(function (images) {
-                var current = _this.images[0], toshow = [];
-                for (var i = 0, n = images.length; i < n; i++) {
-                    if (images[i].time == current.time) {
-                        break;
-                    }
-                    toshow.unshift(images[i]);
-                }
-                toshow.forEach(function (image) {
-                    if (_this.listener) {
-                        _this.listener(_this, image);
-                    }
-                });
-            });
-        };
-        Model.getImages = function (url, n) {
-            return new Promise(function (resolve, reject) {
-                var xhr = new XMLHttpRequest();
-                xhr.onload = function () {
-                    var images = JSON.parse(xhr.responseText);
-                    resolve(images);
-                };
-                xhr.onerror = function () {
-                    reject();
-                };
-                xhr.open('GET', url + '?n=' + n);
-                xhr.send();
-            });
-        };
-        Model.load = function (url, n, period) {
-            return Model.getImages(url, n).then(function (images) {
-                return new Model(images, url, n, period);
-            });
-        };
-        return Model;
-    }());
-    var View = /** @class */ (function () {
-        function View(model) {
-            this.model = model;
-            var root = document.querySelector('#root');
-            model.listener = function (model, image) {
-                console.log(image);
-                var el = View.viewFor(image);
-                View.setSize(el, window.innerWidth, 0);
-                root.insertBefore(el, root.firstElementChild);
-                setTimeout(function () {
-                    View.setSize(el, window.innerWidth, window.innerWidth / RATIO);
-                }, 0);
-            };
-            model.images.forEach(function (image) {
-                var el = View.viewFor(image);
-                View.setSize(el, window.innerWidth, window.innerWidth / RATIO);
-                root.appendChild(el);
-            });
-            window.addEventListener('resize', function () {
-                var els = document.querySelectorAll('.photo');
-                for (var i = 0, n = els.length; i < n; i++) {
-                    View.setSize(els[i], window.innerWidth, window.innerWidth / RATIO);
-                }
-            }, false);
-        }
-        View.setSize = function (el, w, h) {
-            var style = el.style;
-            style.setProperty('width', w + 'px', '');
-            style.setProperty('height', h + 'px', '');
-        };
-        View.viewFor = function (image) {
-            var el = document.createElement('div');
-            el.classList.add('photo');
-            el.style.setProperty('background-image', 'url(' + image.name + ')', '');
-            return el;
-        };
-        return View;
-    }());
-    Model.load('/imgs/', 20, 10000).then(function (model) {
-        new View(model);
-    });
-})(app || (app = {}));
+var $jscomp=$jscomp||{};$jscomp.scope={};$jscomp.ASSUME_ES5=!1;$jscomp.ASSUME_NO_NATIVE_MAP=!1;$jscomp.ASSUME_NO_NATIVE_SET=!1;$jscomp.defineProperty=$jscomp.ASSUME_ES5||"function"==typeof Object.defineProperties?Object.defineProperty:function(a,d,g){a!=Array.prototype&&a!=Object.prototype&&(a[d]=g.value)};$jscomp.getGlobal=function(a){return"undefined"!=typeof window&&window===a?a:"undefined"!=typeof global&&null!=global?global:a};$jscomp.global=$jscomp.getGlobal(this);$jscomp.SYMBOL_PREFIX="jscomp_symbol_";
+$jscomp.initSymbol=function(){$jscomp.initSymbol=function(){};$jscomp.global.Symbol||($jscomp.global.Symbol=$jscomp.Symbol)};$jscomp.Symbol=function(){var a=0;return function(d){return $jscomp.SYMBOL_PREFIX+(d||"")+a++}}();
+$jscomp.initSymbolIterator=function(){$jscomp.initSymbol();var a=$jscomp.global.Symbol.iterator;a||(a=$jscomp.global.Symbol.iterator=$jscomp.global.Symbol("iterator"));"function"!=typeof Array.prototype[a]&&$jscomp.defineProperty(Array.prototype,a,{configurable:!0,writable:!0,value:function(){return $jscomp.arrayIterator(this)}});$jscomp.initSymbolIterator=function(){}};
+$jscomp.initSymbolAsyncIterator=function(){$jscomp.initSymbol();var a=$jscomp.global.Symbol.asyncIterator;a||(a=$jscomp.global.Symbol.asyncIterator=$jscomp.global.Symbol("asyncIterator"));$jscomp.initSymbolAsyncIterator=function(){}};$jscomp.arrayIterator=function(a){var d=0;return $jscomp.iteratorPrototype(function(){return d<a.length?{done:!1,value:a[d++]}:{done:!0}})};
+$jscomp.iteratorPrototype=function(a){$jscomp.initSymbolIterator();a={next:a};a[$jscomp.global.Symbol.iterator]=function(){return this};return a};$jscomp.makeIterator=function(a){$jscomp.initSymbolIterator();var d=a[Symbol.iterator];return d?d.call(a):$jscomp.arrayIterator(a)};
+$jscomp.polyfill=function(a,d,g,f){if(d){g=$jscomp.global;a=a.split(".");for(f=0;f<a.length-1;f++){var b=a[f];b in g||(g[b]={});g=g[b]}a=a[a.length-1];f=g[a];d=d(f);d!=f&&null!=d&&$jscomp.defineProperty(g,a,{configurable:!0,writable:!0,value:d})}};$jscomp.FORCE_POLYFILL_PROMISE=!1;
+$jscomp.polyfill("Promise",function(a){function d(){this.batch_=null}function g(c){return c instanceof b?c:new b(function(e,b){e(c)})}if(a&&!$jscomp.FORCE_POLYFILL_PROMISE)return a;d.prototype.asyncExecute=function(c){null==this.batch_&&(this.batch_=[],this.asyncExecuteBatch_());this.batch_.push(c);return this};d.prototype.asyncExecuteBatch_=function(){var c=this;this.asyncExecuteFunction(function(){c.executeBatch_()})};var f=$jscomp.global.setTimeout;d.prototype.asyncExecuteFunction=function(c){f(c,
+0)};d.prototype.executeBatch_=function(){for(;this.batch_&&this.batch_.length;){var c=this.batch_;this.batch_=[];for(var e=0;e<c.length;++e){var b=c[e];c[e]=null;try{b()}catch(l){this.asyncThrow_(l)}}}this.batch_=null};d.prototype.asyncThrow_=function(c){this.asyncExecuteFunction(function(){throw c;})};var b=function(c){this.state_=0;this.result_=void 0;this.onSettledCallbacks_=[];var e=this.createResolveAndReject_();try{c(e.resolve,e.reject)}catch(k){e.reject(k)}};b.prototype.createResolveAndReject_=
+function(){function c(c){return function(a){b||(b=!0,c.call(e,a))}}var e=this,b=!1;return{resolve:c(this.resolveTo_),reject:c(this.reject_)}};b.prototype.resolveTo_=function(c){if(c===this)this.reject_(new TypeError("A Promise cannot resolve to itself"));else if(c instanceof b)this.settleSameAsPromise_(c);else{a:switch(typeof c){case "object":var e=null!=c;break a;case "function":e=!0;break a;default:e=!1}e?this.resolveToNonPromiseObj_(c):this.fulfill_(c)}};b.prototype.resolveToNonPromiseObj_=function(c){var b=
+void 0;try{b=c.then}catch(k){this.reject_(k);return}"function"==typeof b?this.settleSameAsThenable_(b,c):this.fulfill_(c)};b.prototype.reject_=function(c){this.settle_(2,c)};b.prototype.fulfill_=function(c){this.settle_(1,c)};b.prototype.settle_=function(c,b){if(0!=this.state_)throw Error("Cannot settle("+c+", "+b+"): Promise already settled in state"+this.state_);this.state_=c;this.result_=b;this.executeOnSettledCallbacks_()};b.prototype.executeOnSettledCallbacks_=function(){if(null!=this.onSettledCallbacks_){for(var c=
+0;c<this.onSettledCallbacks_.length;++c)h.asyncExecute(this.onSettledCallbacks_[c]);this.onSettledCallbacks_=null}};var h=new d;b.prototype.settleSameAsPromise_=function(c){var b=this.createResolveAndReject_();c.callWhenSettled_(b.resolve,b.reject)};b.prototype.settleSameAsThenable_=function(c,b){var a=this.createResolveAndReject_();try{c.call(b,a.resolve,a.reject)}catch(l){a.reject(l)}};b.prototype.then=function(c,a){function e(c,b){return"function"==typeof c?function(b){try{f(c(b))}catch(m){d(m)}}:
+b}var f,d,h=new b(function(c,b){f=c;d=b});this.callWhenSettled_(e(c,f),e(a,d));return h};b.prototype.catch=function(c){return this.then(void 0,c)};b.prototype.callWhenSettled_=function(c,b){function a(){switch(e.state_){case 1:c(e.result_);break;case 2:b(e.result_);break;default:throw Error("Unexpected state: "+e.state_);}}var e=this;null==this.onSettledCallbacks_?h.asyncExecute(a):this.onSettledCallbacks_.push(a)};b.resolve=g;b.reject=function(c){return new b(function(b,a){a(c)})};b.race=function(c){return new b(function(b,
+a){for(var e=$jscomp.makeIterator(c),f=e.next();!f.done;f=e.next())g(f.value).callWhenSettled_(b,a)})};b.all=function(c){var a=$jscomp.makeIterator(c),f=a.next();return f.done?g([]):new b(function(c,b){function e(b){return function(a){d[b]=a;h--;0==h&&c(d)}}var d=[],h=0;do d.push(void 0),h++,g(f.value).callWhenSettled_(e(d.length-1),b),f=a.next();while(!f.done)})};return b},"es6","es3");var app;
+(function(a){var d=1920/1080;a=function(){function a(b,a,c,e){var d=this;this.images=b;this.url=a;this.n=c;this.period=e;setInterval(function(){d.reload()},e)}a.prototype.reload=function(){var b=this;a.getImages(this.url,this.n).then(function(a){for(var c=b.images[0],e=[],d=0,f=a.length;d<f&&a[d].time!=c.time;d++)e.unshift(a[d]);e.forEach(function(c){b.listener&&b.listener(b,c)})})};a.getImages=function(b,a){return new Promise(function(c,e){var d=new XMLHttpRequest;d.onload=function(){var b=JSON.parse(d.responseText);
+c(b)};d.onerror=function(){e()};d.open("GET",b+"?n="+a);d.send()})};a.load=function(b,d,c){return a.getImages(b,d).then(function(e){return new a(e,b,d,c)})};return a}();var g=function(){function a(b){this.model=b;var f=document.querySelector("#root");b.listener=function(c,b){console.log(b);var e=a.viewFor(b);a.setSize(e,window.innerWidth,0);f.insertBefore(e,f.firstElementChild);setTimeout(function(){a.setSize(e,window.innerWidth,window.innerWidth/d)},0)};b.images.forEach(function(b){b=a.viewFor(b);
+a.setSize(b,window.innerWidth,window.innerWidth/d);f.appendChild(b)});window.addEventListener("resize",function(){for(var b=document.querySelectorAll(".photo"),e=0,f=b.length;e<f;e++)a.setSize(b[e],window.innerWidth,window.innerWidth/d)},!1)}a.setSize=function(b,a,c){b=b.style;b.setProperty("width",a+"px","");b.setProperty("height",c+"px","")};a.viewFor=function(b){var a=document.createElement("div");a.classList.add("photo");a.style.setProperty("background-image","url("+b.name+")","");return a};return a}();
+a.load("/imgs/",20,1E4).then(function(a){new g(a)})})(app||(app={}));
