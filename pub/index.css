@@ -1,0 +1,9 @@
+body {
+    margin: 0;
+}
+
+.photo {
+    margin-bottom: 10px;
+    background-size: cover;
+    transition: width,height 1s ease-in-out;
+}
