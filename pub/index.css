@@ -5,5 +5,5 @@ body {
 .photo {
     margin-bottom: 10px;
     background-size: cover;
-    transition: width,height 1s ease-in-out;
+    transition: width,height 500ms ease-in-out;
 }
